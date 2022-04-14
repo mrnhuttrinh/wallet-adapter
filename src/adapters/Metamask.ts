@@ -15,7 +15,7 @@ class MetamaskAdapter implements IAdapterBase {
     try {
       Logger.log(this.name, 'constructor start');
       this.provider = new Web3(Object(window).ethereum);
-      this.getChainListInfn();
+      this.getChainListInfo();
       Logger.log(this.name, 'constructor successed');
     } catch (e) {
       Logger.log(this.name, 'constructor error', e);
@@ -24,19 +24,19 @@ class MetamaskAdapter implements IAdapterBase {
     }
   }
 
-  private async getChainListInfn(): Promise<void> {
+  private async getChainListInfo(): Promise<void> {
     try {
-      Logger.log(this.name, 'getChainListInfn start');
+      Logger.log(this.name, 'getChainListInfo start');
       const res = await axios.get('https://chainid.network/chains.json');
 
       if (res.data) {
         this.chainList = res.data
       }
-      Logger.log(this.name, 'getChainListInfn successed', this.chainList);
+      Logger.log(this.name, 'getChainListInfo successed', this.chainList);
     } catch (e) {
-      Logger.log(this.name, 'getChainListInfn error', e);
+      Logger.log(this.name, 'getChainListInfo error', e);
     } finally {
-      Logger.log(this.name, 'getChainListInfn end');
+      Logger.log(this.name, 'getChainListInfo end');
     }
   }
 
