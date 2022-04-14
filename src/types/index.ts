@@ -10,6 +10,8 @@ export interface IAdapterBase {
 
 export interface IWalletContext {
   connect(type: WalletTypeEnum): Promise<void>;
+  isInstalled(type: WalletTypeEnum): boolean;
+  isConnected(type: WalletTypeEnum): boolean;
   // linkWalletToUser(logData: unknown): Promise<unknown>;
   // requestDisconnectAddress(walletAddress: string): Promise<boolean>;
   // mintEnvironmentNFT(rock: unknown, logData: unknown): Promise<unknown>;
