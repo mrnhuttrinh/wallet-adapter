@@ -1,4 +1,4 @@
-import { IWalletContext, WalletTypeEnum } from "../types";
+import { IWalletContext, WalletTypeEnum } from '../types';
 import metamaskAdapter from './Metamask';
 
 class WalletAdapter implements IWalletContext {

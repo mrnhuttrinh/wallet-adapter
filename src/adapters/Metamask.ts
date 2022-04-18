@@ -29,7 +29,7 @@ class MetamaskAdapter implements IAdapterBase {
       const res = await axios.get('https://chainid.network/chains.json');
 
       if (res.data) {
-        this.chainList = res.data
+        this.chainList = res.data;
       }
       Logger.log(this.name, 'getChainListInfo successed', this.chainList);
     } catch (e) {
