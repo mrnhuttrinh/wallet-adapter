@@ -18,12 +18,17 @@ const WalletProvider = ({
     return WalletAdapter.isConnected(type);
   }
 
+  const connectedAddress = (type: WalletTypeEnum): string | undefined => {
+    return WalletAdapter.connectedAddress(type);
+  }
+
   return (
     <walletContext.Provider
       value={{
         connect,
         isInstalled,
         isConnected,
+        connectedAddress,
       }}
     >
       {children}

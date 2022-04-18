@@ -1,0 +1,44 @@
+.spinner {
+    width: 40px;
+    height: 40px;
+    display: inline-block;
+    border-radius: 6px;
+}
+
+.container {
+    min-height: 100vh;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    background: #000000;
+}
+
+.loading {
+    width: 64px;
+    height: 64px;
+    border-radius: 50%;
+    border: 4px solid rgba(255, 255, 255, 0.8);
+
+    &:before {
+        display: block;
+        position: relative;
+        left: -4px;
+        top: -4px;
+        content: ' ';
+        width: inherit;
+        height: inherit;
+        border-radius: 50%;
+        border: 4px solid;
+        border-color:rgba(0, 0, 0, 0.5) transparent transparent transparent;
+        animation: loading-rotate .8s ease-out infinite;
+    }
+}
+
+@keyframes loading-rotate {
+    0% {
+        transform: rotate(0deg);
+    }
+    100% {
+        transform: rotate(360deg);
+    }
+}

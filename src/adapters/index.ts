@@ -10,16 +10,23 @@ class WalletAdapter implements IWalletContext {
 
   public isInstalled(type: WalletTypeEnum): boolean {
     if (type === WalletTypeEnum.EVM) {
-      metamaskAdapter.connect();
+      return metamaskAdapter.isInstalled;
     }
     return false;
   }
 
   public isConnected(type: WalletTypeEnum): boolean {
     if (type === WalletTypeEnum.EVM) {
-      metamaskAdapter.connect();
+      return metamaskAdapter.isConnected;
     }
     return false;
+  }
+
+  public connectedAddress(type: WalletTypeEnum): string | undefined {
+    if (type === WalletTypeEnum.EVM) {
+      return metamaskAdapter.connectedAddress;
+    }
+    return undefined;
   }
 }
 
