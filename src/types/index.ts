@@ -1,5 +1,8 @@
+import { Cluster } from '@solana/web3.js';
+
 export interface IAdapterBase {
   connect(): Promise<unknown>;
+  extensionInstallUrl: string;
   isInstalled: boolean;
   isConnected: boolean;
   connectedAddress?: string;
@@ -13,6 +16,7 @@ export interface IAdapterBase {
 
 export interface IWalletContext {
   connect(type: WalletTypeEnum): Promise<void>;
+  extensionInstallUrl(type: WalletTypeEnum): string | undefined;
   isInstalled(type: WalletTypeEnum): boolean;
   isConnected(type: WalletTypeEnum): boolean;
   connectedAddress(type: WalletTypeEnum): string | undefined;
@@ -34,8 +38,13 @@ export enum WalletNetworkEnum {
   SOLANA = 'SOLANA'
 }
 
+export interface ISolanaConfig {
+  solanaNetwork: Cluster;
+  solanaRpcHost: string;
+}
 export interface IWalletProvider {
   children: any;
+  solanaConfig: ISolanaConfig;
 }
 
 

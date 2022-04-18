@@ -5,22 +5,33 @@ import WalletAdapter from '../adapters';
 
 const WalletProvider = ({
   children,
+  solanaConfig,
 }: IWalletProvider): JSX.Element => {
+  const walletAdapter = React.useRef<WalletAdapter>();
+
   const connect = async (type: WalletTypeEnum): Promise<void> => {
-    await WalletAdapter.connect(type);
+    await walletAdapter.current?.connect(type);
   };
 
   const isInstalled = (type: WalletTypeEnum): boolean => {
-    return WalletAdapter.isInstalled(type);
+    return !!walletAdapter.current?.isInstalled(type);
   };
 
   const isConnected = (type: WalletTypeEnum): boolean => {
-    return WalletAdapter.isConnected(type);
+    return !!walletAdapter.current?.isConnected(type);
   };
 
   const connectedAddress = (type: WalletTypeEnum): string | undefined => {
-    return WalletAdapter.connectedAddress(type);
+    return walletAdapter.current?.connectedAddress(type);
   };
+
+  const extensionInstallUrl = (type: WalletTypeEnum): string | undefined => {
+    return walletAdapter.current?.extensionInstallUrl(type);
+  };
+
+  React.useEffect(() => {
+    walletAdapter.current = new WalletAdapter(solanaConfig);
+  }, []);
 
   return (
     <walletContext.Provider
@@ -29,6 +40,7 @@ const WalletProvider = ({
         isInstalled,
         isConnected,
         connectedAddress,
+        extensionInstallUrl,
       }}
     >
       {children}

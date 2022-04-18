@@ -1,17 +1,51 @@
-import Web3 from 'web3';
+import { PublicKey, Transaction, Connection, clusterApiUrl } from '@solana/web3.js';
+import * as bs58 from 'bs58';
+
+import { IAdapterBase, ISolanaConfig } from '../types';
 import Logger from '../utils/logger';
-import { IAdapterBase } from '../types';
+
+type DisplayEncoding = 'utf8' | 'hex';
+type PhantomEvent = 'disconnect' | 'connect' | 'accountChanged';
+type PhantomRequestMethod =
+  | 'connect'
+  | 'disconnect'
+  | 'signTransaction'
+  | 'signAllTransactions'
+  | 'signMessage';
+
+interface ConnectOpts {
+  onlyIfTrusted: boolean;
+}
+
+interface PhantomProvider {
+  publicKey: PublicKey | null;
+  isConnected: boolean | null;
+  signTransaction: (transaction: Transaction) => Promise<Transaction>;
+  signAllTransactions: (transactions: Transaction[]) => Promise<Transaction[]>;
+  signMessage: (
+    message: Uint8Array | string,
+    display?: DisplayEncoding
+  ) => Promise<any>;
+  connect: (opts?: Partial<ConnectOpts>) => Promise<{ publicKey: PublicKey }>;
+  disconnect: () => Promise<void>;
+  on: (event: PhantomEvent, handler: (args: any) => void) => void;
+  request: (method: PhantomRequestMethod, params: any) => Promise<unknown>;
+}
+
 
 class PhantomAdapter implements IAdapterBase {
   private name = 'Phantom';
-  private provider?: Web3;
+  private _provider: PhantomProvider | undefined;
+  private connection?: Connection;
+  public extensionInstallUrl = 'https://phantom.app/';
 
   public connectedAddress?: string;
 
-  constructor() {
+  constructor(config: ISolanaConfig) {
     try {
       Logger.log(this.name, 'constructor start');
-      this.provider = new Web3(Object(window).ethereum);
+      this._provider = this.getProvider();
+      this.connection = new Connection(clusterApiUrl(config.solanaNetwork));
       Logger.log(this.name, 'constructor successed');
     } catch (e) {
       Logger.log(this.name, 'constructor error', e);
@@ -19,6 +53,13 @@ class PhantomAdapter implements IAdapterBase {
       Logger.log(this.name, 'constructor end');
     }
   }
+
+  private getProvider = (): PhantomProvider | undefined => {
+    if ('solana' in window) {
+      const provider = Object(window).solana as any;
+      if (provider.isPhantom) return provider as PhantomProvider;
+    }
+  };
 
   public get isInstalled(): boolean {
     try {
@@ -63,5 +104,4 @@ class PhantomAdapter implements IAdapterBase {
   }
 }
 
-const adapter = new PhantomAdapter();
-export default adapter;
+export default PhantomAdapter;

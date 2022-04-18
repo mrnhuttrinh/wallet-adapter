@@ -7,6 +7,7 @@ class MetamaskAdapter implements IAdapterBase {
   private name = 'Metamask';
   private provider?: Web3;
   private chainList: IChain[] = [];
+  public extensionInstallUrl = 'https://metamask.io/download/';
 
   public connectedAddress?: string;
 
@@ -82,5 +83,4 @@ class MetamaskAdapter implements IAdapterBase {
   }
 }
 
-const adapter = new MetamaskAdapter();
-export default adapter;
+export default MetamaskAdapter;

@@ -1,43 +1,59 @@
-import { IWalletContext, WalletTypeEnum } from '../types';
-import metamaskAdapter from './Metamask';
-import phantomAdapter from './Phantom';
+import { ISolanaConfig, IWalletContext, WalletTypeEnum } from '../types';
+import MetamaskAdapter from './Metamask';
+import PhantomAdapter from './Phantom';
 
 class WalletAdapter implements IWalletContext {
+  private metamaskAdapter: MetamaskAdapter;
+  private phantomAdapter: PhantomAdapter;
+
+  constructor(solanaConfig: ISolanaConfig) {
+    this.metamaskAdapter = new MetamaskAdapter();
+    this.phantomAdapter = new PhantomAdapter(solanaConfig);
+  }
+
   public async connect(type: WalletTypeEnum): Promise<void> {
     if (type === WalletTypeEnum.EVM) {
-      await metamaskAdapter.connect();
+      await this.metamaskAdapter.connect();
     } else if (type === WalletTypeEnum.SOLANA) {
-      await phantomAdapter.connect();
+      await this.phantomAdapter.connect();
     }
   }
 
   public isInstalled(type: WalletTypeEnum): boolean {
     if (type === WalletTypeEnum.EVM) {
-      return metamaskAdapter.isInstalled;
+      return this.metamaskAdapter.isInstalled;
     } else if (type === WalletTypeEnum.SOLANA) {
-      return phantomAdapter.isInstalled;
+      return this.phantomAdapter.isInstalled;
     }
     return false;
   }
 
   public isConnected(type: WalletTypeEnum): boolean {
     if (type === WalletTypeEnum.EVM) {
-      return metamaskAdapter.isConnected;
+      return this.metamaskAdapter.isConnected;
     } else if (type === WalletTypeEnum.SOLANA) {
-      return phantomAdapter.isConnected;
+      return this.phantomAdapter.isConnected;
     }
     return false;
   }
 
   public connectedAddress(type: WalletTypeEnum): string | undefined {
     if (type === WalletTypeEnum.EVM) {
-      return metamaskAdapter.connectedAddress;
+      return this.metamaskAdapter.connectedAddress;
     } else if (type === WalletTypeEnum.SOLANA) {
-      return phantomAdapter.connectedAddress;
+      return this.phantomAdapter.connectedAddress;
+    }
+    return undefined;
+  }
+
+  public extensionInstallUrl(type: WalletTypeEnum): string | undefined {
+    if (type === WalletTypeEnum.EVM) {
+      return this.metamaskAdapter.extensionInstallUrl;
+    } else if (type === WalletTypeEnum.SOLANA) {
+      return this.phantomAdapter.extensionInstallUrl;
     }
     return undefined;
   }
 }
 
-const adapter = new WalletAdapter();
-export default adapter;
+export default WalletAdapter;
