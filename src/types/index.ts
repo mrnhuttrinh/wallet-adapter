@@ -1,4 +1,5 @@
 import { Cluster } from '@solana/web3.js';
+import { AbiItem } from 'web3-utils';
 
 export interface IAdapterBase {
   connect(): Promise<unknown>;
@@ -42,9 +43,14 @@ export interface ISolanaConfig {
   solanaNetwork: Cluster;
   solanaRpcHost: string;
 }
+export interface IEVMConfig {
+  mintAbi: AbiItem[];
+  ticketAbi: AbiItem[];
+}
 export interface IWalletProvider {
   children: any;
   solanaConfig: ISolanaConfig;
+  evmConfig: IEVMConfig;
 }
 
 

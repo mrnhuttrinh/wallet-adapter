@@ -35,17 +35,19 @@ interface PhantomProvider {
 
 class PhantomAdapter implements IAdapterBase {
   private name = 'Phantom';
-  private _provider: PhantomProvider | undefined;
+  private provider: PhantomProvider | undefined;
   private connection?: Connection;
   public extensionInstallUrl = 'https://phantom.app/';
+  private config?: ISolanaConfig;
 
   public connectedAddress?: string;
 
-  constructor(config: ISolanaConfig) {
+  constructor(_config: ISolanaConfig) {
     try {
       Logger.log(this.name, 'constructor start');
-      this._provider = this.getProvider();
-      this.connection = new Connection(clusterApiUrl(config.solanaNetwork));
+      this.config = _config;
+      this.provider = this.getProvider();
+      this.connection = new Connection(clusterApiUrl(_config.solanaNetwork));
       Logger.log(this.name, 'constructor successed');
     } catch (e) {
       Logger.log(this.name, 'constructor error', e);

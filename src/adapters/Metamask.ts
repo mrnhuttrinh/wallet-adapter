@@ -1,6 +1,6 @@
 import Web3 from 'web3';
 import Logger from '../utils/logger';
-import { IAdapterBase, IChain } from '../types';
+import { IAdapterBase, IChain, IEVMConfig } from '../types';
 import axios from 'axios';
 
 class MetamaskAdapter implements IAdapterBase {
@@ -8,12 +8,13 @@ class MetamaskAdapter implements IAdapterBase {
   private provider?: Web3;
   private chainList: IChain[] = [];
   public extensionInstallUrl = 'https://metamask.io/download/';
-
+  private config?: IEVMConfig;
   public connectedAddress?: string;
 
-  constructor() {
+  constructor(_config: IEVMConfig) {
     try {
       Logger.log(this.name, 'constructor start');
+      this.config = _config;
       this.provider = new Web3(Object(window).ethereum);
       this.getChainListInfo();
       Logger.log(this.name, 'constructor successed');

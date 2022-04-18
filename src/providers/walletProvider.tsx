@@ -6,6 +6,7 @@ import WalletAdapter from '../adapters';
 const WalletProvider = ({
   children,
   solanaConfig,
+  evmConfig,
 }: IWalletProvider): JSX.Element => {
   const walletAdapter = React.useRef<WalletAdapter>();
 
@@ -30,7 +31,10 @@ const WalletProvider = ({
   };
 
   React.useEffect(() => {
-    walletAdapter.current = new WalletAdapter(solanaConfig);
+    walletAdapter.current = new WalletAdapter({
+      solana: solanaConfig,
+      evm: evmConfig
+    });
   }, []);
 
   return (
