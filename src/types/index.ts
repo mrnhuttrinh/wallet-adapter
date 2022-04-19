@@ -43,9 +43,9 @@ export interface ISolanaConfig {
   solanaNetwork: Cluster;
   solanaRpcHost: string;
 }
+// eslint-disable-next-line @typescript-eslint/no-empty-interface
 export interface IEVMConfig {
-  mintAbi: AbiItem[];
-  ticketAbi: AbiItem[];
+  //
 }
 export interface IWalletProvider {
   children: any;

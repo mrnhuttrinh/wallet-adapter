@@ -4,6 +4,8 @@ import { AbiItem } from 'web3-utils';
 import Logger from '../utils/logger';
 import { IAdapterBase, IChain, IEVMConfig } from '../types';
 import axios from 'axios';
+import ticketABI from '../contracts/evm/ticket.json';
+import environmentABI from '../contracts/evm/environment.json';
 
 class MetamaskAdapter implements IAdapterBase {
   private name = 'Metamask';
@@ -175,6 +177,93 @@ class MetamaskAdapter implements IAdapterBase {
       }
     }
   }
+
+  public removeDisconnect(handler?: unknown): void {
+    if (Object(window).ethereum) {
+      if (handler) {
+        Object(window).ethereum.removeListener('disconnect', handler);
+      } else {
+        Object(window).ethereum.removeListener('disconnect', this.handleDisconnect);
+      }
+    }
+  }
+
+  private handleConnect(connectInfo: any): void {
+    Logger.log(this.name, 'handleConnect start');
+    Logger.log(this.name, 'handleConnect end');
+  }
+
+  public registerConnect(handler?: any): void {
+    if (Object(window).ethereum) {
+      if (handler) {
+        Object(window).ethereum.on('connect', handler);
+      } else {
+        Object(window).ethereum.on('connect', this.handleConnect);
+      }
+    }
+  }
+
+  public removeConnect(handler?: any): void {
+    if (Object(window).ethereum) {
+      if (handler) {
+        Object(window).ethereum.removeListener('connect', handler);
+      } else {
+        Object(window).ethereum.removeListener('connect', this.handleConnect);
+      }
+    }
+  }
+
+  private addChain = async (chain: IChain): Promise<void> => {
+    try {
+      Logger.log(this.name, 'addChain start');
+      const account = (await this.provider.eth.getAccounts())[0];
+      if (chain) {
+        const params = {
+            // chainId: '0x' + chain?.chainId.toString(16), // A 0x-prefixed hexadecimal string
+          chainId: this.provider.utils.toHex(chain.chainId),
+          chainName: chain.name,
+          nativeCurrency: {
+            name: chain.nativeCurrency.name,
+            symbol: chain.nativeCurrency.symbol, // 2-6 characters long
+            decimals: chain.nativeCurrency.decimals,
+          },
+          rpcUrls: chain.rpc,
+          blockExplorerUrls: [chain.explorers && chain.explorers.length > 0 && chain.explorers[0].url ? chain.explorers[0].url : chain.infoURL],
+        };
+
+        const ethereum = Object(window).ethereum;
+        await ethereum.request({
+          method: 'wallet_addEthereumChain',
+          params: [params, account],
+        });
+        Logger.log(this.name, 'addChain successed');
+      }
+    } catch (e) {
+      Logger.log(this.name, 'addChain error', e);
+      throw e;
+    } finally {
+      Logger.log(this.name, 'addChain end');
+    }
+  }
+
+  private requestSwitchChain = async (chain: IChain): Promise<void> => {
+    try {
+      Logger.log(this.name, 'requestSwitchChain start');
+      const ethereum = Object(window).ethereum;
+      await ethereum.request({
+          method: 'wallet_switchEthereumChain',
+          params: [{chainId: this.provider.utils.toHex(chain.chainId)}], // chainId must be in hexadecimal numbers
+      });
+      Logger.log(this.name, 'requestSwitchChain successed');
+    } catch (e) {
+      // if network isn't added, pop-up metamask to add
+      Logger.log(this.name, 'requestSwitchChain error', e);
+      await this.addChain(chain);
+    } finally {
+      Logger.log(this.name, 'requestSwitchChain end');
+    }
+  }
+
 }
 
 export default MetamaskAdapter;
