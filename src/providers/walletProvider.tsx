@@ -8,7 +8,8 @@ const WalletProvider = ({
   children,
   solanaConfig,
   evmConfig,
-  apiConfig
+  apiConfig,
+  userWallets,
 }: IWalletProvider): JSX.Element => {
   const walletAdapter = React.useRef<WalletAdapter>();
 
