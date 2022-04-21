@@ -55,11 +55,23 @@ export interface IAPIConfig {
   accessTokenStorageKey: string;
   refreshTokenStorageKey: string;
 }
+
+export interface IUserWallet {
+  id: string;
+  userId: string;
+  address: string;
+  type: WalletTypeEnum;
+}
+
+export interface IWalletByType {
+  [key: number]: IUserWallet[];
+}
 export interface IWalletProvider {
   children: any;
   solanaConfig: ISolanaConfig;
   evmConfig: IEVMConfig;
   apiConfig: IAPIConfig;
+  userWallets: IWalletByType;
 }
 
 
