@@ -1,10 +1,11 @@
-import { ISolanaConfig, IEVMConfig, IWalletContext, WalletTypeEnum } from '../types';
+import { ISolanaConfig, IEVMConfig, IWalletContext, WalletTypeEnum, IWalletByType } from '../types';
 import MetamaskAdapter from './Metamask';
 import PhantomAdapter from './Phantom';
 
 class WalletAdapter implements IWalletContext {
   private metamaskAdapter?: MetamaskAdapter;
   private phantomAdapter?: PhantomAdapter;
+  private userWallets?: IWalletByType;
 
   public setMetamaskConfig(_c: IEVMConfig): void {
     this.metamaskAdapter = new MetamaskAdapter(_c);
@@ -12,6 +13,10 @@ class WalletAdapter implements IWalletContext {
 
   public setPhantomConfig(_c: ISolanaConfig): void {
     this.phantomAdapter = new PhantomAdapter(_c);
+  }
+
+  public setUserWallets(_c: IWalletByType): void {
+    this.userWallets = _c;
   }
 
   public async connect(type: WalletTypeEnum): Promise<void> {

@@ -1,7 +1,7 @@
 import React from 'react';
 import walletContext from '../contexts/walletContext';
 import { IWalletProvider, WalletTypeEnum } from '../types';
-import WalletAdapter from '../adapters';
+import walletAdapter from '../adapters';
 import http from '../api/http';
 
 const WalletProvider = ({
@@ -11,36 +11,42 @@ const WalletProvider = ({
   apiConfig,
   userWallets,
 }: IWalletProvider): JSX.Element => {
-  const walletAdapter = React.useRef<WalletAdapter>();
 
   const connect = async (type: WalletTypeEnum): Promise<void> => {
-    await walletAdapter.current?.connect(type);
+    await walletAdapter.connect(type);
   };
 
   const isInstalled = (type: WalletTypeEnum): boolean => {
-    return !!walletAdapter.current?.isInstalled(type);
+    return !!walletAdapter.isInstalled(type);
   };
 
   const isConnected = (type: WalletTypeEnum): boolean => {
-    return !!walletAdapter.current?.isConnected(type);
+    return !!walletAdapter.isConnected(type);
   };
 
   const connectedAddress = (type: WalletTypeEnum): string | undefined => {
-    return walletAdapter.current?.connectedAddress(type);
+    return walletAdapter.connectedAddress(type);
   };
 
   const extensionInstallUrl = (type: WalletTypeEnum): string | undefined => {
-    return walletAdapter.current?.extensionInstallUrl(type);
+    return walletAdapter.extensionInstallUrl(type);
   };
 
   React.useEffect(() => {
-    walletAdapter.current = new WalletAdapter({
-      solana: solanaConfig,
-      evm: evmConfig
-    });
-
     http.setConfig(apiConfig);
-  }, []);
+  }, [apiConfig]);
+
+  React.useEffect(() => {
+    walletAdapter.setPhantomConfig(solanaConfig);
+  }, [solanaConfig]);
+
+  React.useEffect(() => {
+    walletAdapter.setMetamaskConfig(evmConfig);
+  }, [evmConfig]);
+
+  React.useEffect(() => {
+    walletAdapter.setUserWallets(userWallets);
+  }, [userWallets]);
 
   return (
     <walletContext.Provider
