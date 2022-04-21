@@ -47,10 +47,19 @@ export interface ISolanaConfig {
 export interface IEVMConfig {
   //
 }
+
+
+export interface IAPIConfig {
+  apiBaseUrl: string;
+  appVersion: string;
+  accessTokenStorageKey: string;
+  refreshTokenStorageKey: string;
+}
 export interface IWalletProvider {
   children: any;
   solanaConfig: ISolanaConfig;
   evmConfig: IEVMConfig;
+  apiConfig: IAPIConfig;
 }
 
 

@@ -2,11 +2,13 @@ import React from 'react';
 import walletContext from '../contexts/walletContext';
 import { IWalletProvider, WalletTypeEnum } from '../types';
 import WalletAdapter from '../adapters';
+import http from '../api/http';
 
 const WalletProvider = ({
   children,
   solanaConfig,
   evmConfig,
+  apiConfig
 }: IWalletProvider): JSX.Element => {
   const walletAdapter = React.useRef<WalletAdapter>();
 
@@ -35,6 +37,8 @@ const WalletProvider = ({
       solana: solanaConfig,
       evm: evmConfig
     });
+
+    http.setConfig(apiConfig);
   }, []);
 
   return (
